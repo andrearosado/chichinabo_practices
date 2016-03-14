@@ -1,2 +1,2 @@
 # chichinabo_practices
-Load functions for the chichinabo poppyramids database
+Load functions for the chichinabo popyramids database

@@ -11,6 +11,7 @@ DECLARE
 colnum integer=0;
 ranges_query text:='SELECT *, '; --Begin range query with a SELECT
 j integer:=0; --Index for range values
+step integer:=1;
 
 BEGIN
 
@@ -19,18 +20,23 @@ EXECUTE E'select count(*) from information_schema.columns where table_name='||qu
 
 --Determine whether a colnum is even or not
 --Age groups are always paired (men/women+geometry column+ geoname column)
+--We first remove any serial column created in the import
 IF colnum % 2 = 1 THEN
     colnum:=colnum-1;
 ELSE
     colnum:=colnum;
 END IF;
 
---Substract geoname and geometry columns from count
-colnum:=colnum-2;
+-- Substract geoname and geometry columns from count
+-- Substract redundant age group (0 <-> 100) to get a divisible number (e.g. 100, 20, etc)
+colnum:=colnum-2-2;
 
--------------------------------------------------------
---TODO: Calculate step (e.g. yearly, quinquennial, etc)
--------------------------------------------------------
+
+-- Calculate step (e.g. yearly, quinquennial, etc)
+step:=100/(colnum/2);
+
+RAISE NOTICE 'Age grouping (%)', step;
+RAISE NOTICE 'Colnum (%)', colnum;
 
 --Build range query
 FOR i IN 0..(colnum-1)/2 LOOP
@@ -39,8 +45,9 @@ FOR i IN 0..(colnum-1)/2 LOOP
 	IF i < (colnum-1)/2 THEN
 
 		-- While it is not the last iteration build ranges by step (e.g. 1, 4, etc)
-		ranges_query:=concat(ranges_query,E'int4range( '||j::text||','||(j+4)::text||',''[)'') AS r_'||j::text||'_'||(j+4)::text||' ,' );
-		j:=j+5;
+		ranges_query:=concat(ranges_query,E'int4range( '||j::text||','||(j+step)::text||',''[)'') AS r_'||j::text||'_'||(j+step)::text||' ,' );
+		j:=j+step;
+	
 	ELSE
 		--If its the last iteration, range will end with "100".
 		ranges_query:=concat(ranges_query,E'int4range( '||j::text||','||100::text||',''[)'') AS r_'||j::text||'_'||100::text||' ,' );

@@ -54,7 +54,7 @@ FOR i IN 0..(colnum-1)/2 LOOP
 		--If its the last iteration, melt will end with "100".
 		melt_query:=concat(melt_query,
 		
-		'SELECT '|| col_geoname ||' AS where_geoname,  '|| col_geom ||' AS where_boundary, xy_'||j::text||'_'||''::text||' as xy, xx_'||j::text||'_'||''::text||' as xx, r_'||j::text||' as age FROM rangos; ');
+		'SELECT '|| col_geoname ||' AS where_geoname,  '|| col_geom ||' AS where_boundary, xy_'||j::text||' as xy, xx_'||j::text||' as xx, r_'||j::text||' as age FROM rangos; ');
 
 
 	END IF;
@@ -70,3 +70,4 @@ RETURN melt_query;
 END
 $BODY$
 LANGUAGE plpgsql
+

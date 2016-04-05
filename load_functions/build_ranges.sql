@@ -29,11 +29,11 @@ END IF;
 
 -- Substract geoname and geometry columns from count
 -- Substract redundant age group (0 <-> 100) to get a divisible number (e.g. 100, 20, etc)
-colnum:=colnum-2-2;
+colnum:=colnum-2;
 
 
 -- Calculate step (e.g. yearly, quinquennial, etc)
-step:=100/(colnum/2);
+step:=round(100/(colnum/2)::numeric);
 
 RAISE NOTICE 'Age grouping (%)', step;
 RAISE NOTICE 'Colnum (%)', colnum;

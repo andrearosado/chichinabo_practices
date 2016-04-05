@@ -45,7 +45,7 @@ FOR i IN 0..(colnum-1)/2 LOOP
 	IF i < (colnum-1)/2 THEN
 
 		-- While it is not the last iteration build ranges by step (e.g. 1, 4, etc)
-		ranges_query:=concat(ranges_query,E'int4range( '||j::text||','||(j+step)::text||',''[)'') AS r_'||j::text||'_'||(j+step)::text||' ,' );
+		ranges_query:=concat(ranges_query,E'int4range( '||j::text||','||(j+step)::text||',''[)'') AS r_'||j::text||'_'||(j+step)::text||', ' );
 		j:=j+step;
 	
 	ELSE
@@ -69,4 +69,4 @@ RETURN ranges_query;
 
 END
 $BODY$
-LANGUAGE plpgsql
+LANGUAGE plpgsql 
